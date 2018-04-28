@@ -1,7 +1,7 @@
 '''
     a plugin in qqbot https://github.com/pandolia/qqbot
 '''
-
+# TODO: asynchronous, default response, more responses
 import random, time, sys, requests, json
 from snownlp import SnowNLP
 
