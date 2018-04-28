@@ -95,7 +95,7 @@ def onQQMessage(bot, contact, member, content):
                     for x in data[1]]
                 send(bot, contact, response)
         else:
-            send(bot, contact, '@{} 嘤嘤嘤'.format(member))
+            send(bot, contact, '@{} 嘤嘤嘤'.format(member.name))
 
     else:
         rand = random.randint(0, 100)
