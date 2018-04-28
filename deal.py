@@ -15,7 +15,7 @@ def onQQMessage(bot, contact, member, content):
     if contact.name != '正经学习群' or content == '' or content == '/表情':
         return
     anic = '@{} '.format(nic)
-    iif anic in content:
+    if anic in content:
         content = '[@ME] ' + content.replace(anic, '')
     if '@ME' in content:
         content = content[5:].strip()
