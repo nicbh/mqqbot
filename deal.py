@@ -35,7 +35,8 @@ def onQQMessage(bot, contact, member, content):
             bot.SendTo(contact, random.choice(hessay))
             return
         if content == '黄网':
-            hsite = ['https://www.baidu.com', 'https://pan.baidu.com']bot.SendTo(contact, random.choice(hsite))
+            hsite = ['https://www.baidu.com', 'https://pan.baidu.com']
+            bot.SendTo(contact, random.choice(hsite))
             return
         if content.lower() == 'av':
             av = ['https://javmoo.net', 'https://hpjav.com', 'https://www.youav.com', 'https://www.pornhub.com', 'https://www.xvideos.com']
@@ -43,7 +44,7 @@ def onQQMessage(bot, contact, member, content):
             return
         keyword = None
         if content.startswith('bt '):
-            keyword = content[3:]
+            keyword = content[3:].strip()
         else:
             position = content.find('-')
             if 0 < position < 6 and len(content) < 15:
@@ -51,7 +52,7 @@ def onQQMessage(bot, contact, member, content):
         sys.stdout.flush()
         print('[btInfo]', content, '||', keyword)
         sys.stdout.flush()
-        if keyword is not None:
+        if keyword is not None and len(keyword) > 0:
             r = requests.post('http://{}:5000/search2'.format(ip), data={'keyword': keyword})
             if r.ok:
                 data = json.loads(r.text)
