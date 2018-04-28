@@ -27,6 +27,7 @@ def getResouce(html):
         spans = item.find(class_='option').find_all('span')
         magnet = spans[0].a.attrs['href']
         name = unquote(magnet[magnet.rfind('=') + 1:])
+        magnet = magnet[0:magnet.rfind('&dn=')]
         time_ = spans[1].b.string
         volume = spans[2].b.string
         # files = spans[3].b.string
