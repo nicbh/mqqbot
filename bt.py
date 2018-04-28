@@ -19,6 +19,7 @@ def getResouce(html):
     soup = BeautifulSoup(html, 'html.parser')
     list = soup.find_all('dl')
     num = 3
+    index = 0
     if len(list) < num:
         num = len(list)
     for item in list[0:num]:
@@ -30,8 +31,10 @@ def getResouce(html):
         volume = spans[2].b.string
         # files = spans[3].b.string
         hots = spans[5].b.string
+        index += 1
         resource.append({
             'name': name,
+            'num': index,
             'href': href,
             'magnet': magnet,
             'time': time_,
