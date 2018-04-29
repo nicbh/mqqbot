@@ -87,11 +87,11 @@ def onQQMessage(bot, contact, member, content):
                 r = requests.post('http://{}:5000/search2'.format(ip), data={'keyword': keyword})
                 if r.ok:
                     data = json.loads(r.text)
-                    response = ['{}.{}\n时间:{} 大小:{} 人气:{}\n{}'.format(
+                    response = ['相关排序:'] + ['{}.{}\n时间:{} 大小:{} 人气:{}\n{}'.format(
                         x['num'], x['name'], x['time'], x['volume'], x['hot'], x['magnet'])
                         for x in data[0]]
                     send(bot, contact, response)
-                    response = ['{}.{}\n时间:{} 大小:{} 人气:{}\n{}'.format(
+                    response = ['人气排序:'] + ['{}.{}\n时间:{} 大小:{} 人气:{}\n{}'.format(
                         x['num'], x['name'], x['time'], x['volume'], x['hot'], x['magnet'])
                         for x in data[1]]
                     send(bot, contact, response)
