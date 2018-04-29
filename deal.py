@@ -2,7 +2,7 @@
     a plugin in qqbot https://github.com/pandolia/qqbot
 '''
 # TODO: asynchronous, default response
-import random, time, sys, requests, json
+import random, time, sys, requests, json, threading
 from snownlp import SnowNLP
 
 ip = '144.202.120.176'
@@ -79,24 +79,30 @@ def onQQMessage(bot, contact, member, content):
             keyword = content[3:].strip()
         else:
             position = content.find('-')
-            if 0 < position < 6 and len(content) < 15:
+            if 0 < position < 9 and len(content) < 15:
                 keyword = content.replace(' ', '')
         print_flush('[btInfo]: "{}", "{}"'.format(content, keyword))
         if keyword is not None and len(keyword) > 0:
-            r = requests.post('http://{}:5000/search2'.format(ip), data={'keyword': keyword})
-            if r.ok:
-                data = json.loads(r.text)
-                response = ['{}.{}\n时间:{} 大小:{} 人气:{}\n{}'.format(
-                    x['num'], x['name'], x['time'], x['volume'], x['hot'], x['magnet'])
-                    for x in data[0]]
-                send(bot, contact, response)
-                response = ['{}.{}\n时间:{} 大小:{} 人气:{}\n{}'.format(
-                    x['num'], x['name'], x['time'], x['volume'], x['hot'], x['magnet'])
-                    for x in data[1]]
-                send(bot, contact, response)
+            def search2(bot, contact, keyword):
+                r = requests.post('http://{}:5000/search2'.format(ip), data={'keyword': keyword})
+                if r.ok:
+                    data = json.loads(r.text)
+                    response = ['{}.{}\n时间:{} 大小:{} 人气:{}\n{}'.format(
+                        x['num'], x['name'], x['time'], x['volume'], x['hot'], x['magnet'])
+                        for x in data[0]]
+                    send(bot, contact, response)
+                    response = ['{}.{}\n时间:{} 大小:{} 人气:{}\n{}'.format(
+                        x['num'], x['name'], x['time'], x['volume'], x['hot'], x['magnet'])
+                        for x in data[1]]
+                    send(bot, contact, response)
+                else:
+                    send(bot, contact, '搜索"{}"网络错误了哦'.format(keyword))
+
+            netcom = threading.Thread(target=search2, args=(bot, contact, keyword))
+            netcom.setDaemon(True)
+            netcom.start()
         else:
             send(bot, contact, '@{} 嘤嘤嘤'.format(member.name))
-
     else:
         rand = random.randint(0, 100)
         prob = abs(SnowNLP(content).sentiments - 0.5) * 100 / 2
