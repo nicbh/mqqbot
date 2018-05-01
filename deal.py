@@ -115,7 +115,7 @@ def onQQMessage(bot, contact, member, content):
             text = content[11:].strip()
             if len(text) > 0:
                 detected = translator.detect(text)
-                send(bot, contact, '{}@{}'.format(detected.lang, detected.confidence))
+                send(bot, contact, '{}@{}'.format(LANGUAGES[detected.lang], detected.confidence))
                 return
 
         # bt
