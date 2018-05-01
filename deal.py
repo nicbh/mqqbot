@@ -4,8 +4,7 @@
 # TODO: translation
 import random, time, sys, requests, json, threading
 from snownlp import SnowNLP
-from googletrans import Translator
-from googletrans import LANGUAGES
+from googletrans import Translator, LANGUAGES
 
 ip = '144.202.120.176'
 nic = 'nicbh'
@@ -109,9 +108,15 @@ def onQQMessage(bot, contact, member, content):
                     sourceLang = shortLang[sourceLang]
                 if targetLang in shortLang:
                     targetLang = shortLang[targetLang]
-                if sourceLang in LANGUAGES and targetLang in LANGUAGES:
+                if sourceLang in LANGUAGES and targetLang in LANGUAGES and len(text) > 0:
                     send(bot, contact, translator.translate(text, targetLang, sourceLang).text)
                     return
+        if content.lower().startswith('detectlang '):
+            text = content[11:]
+            if len(text) > 0:
+                detected = translator.detect(text)
+                send(bot, contact, '{}@{}'.format(detected.lang, detected.confidence))
+                return
 
         # bt
         keyword = None
