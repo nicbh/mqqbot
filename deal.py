@@ -22,9 +22,13 @@ def in_bt_buffer(keyword):
             return True
         else:
             bt_buffer[keyword] = now_time
+            with open('bt_buffer.log', 'w+', encoding='utf-8') as file:
+                file.write(json.dumps(bt_buffer, ensure_ascii=False, indent=4))
             return False
     else:
         bt_buffer[keyword] = now_time
+        with open('bt_buffer.log', 'w+', encoding='utf-8') as file:
+            file.write(json.dumps(bt_buffer, ensure_ascii=False, indent=4))
         return False
 
 
