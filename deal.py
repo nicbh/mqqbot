@@ -1,13 +1,31 @@
 '''
     a plugin in qqbot https://github.com/pandolia/qqbot
 '''
-# TODO: asynchronous, default response
+# TODO: translation
 import random, time, sys, requests, json, threading
 from snownlp import SnowNLP
+from googletrans import Translator
+from googletrans import LANGUAGES
 
 ip = '144.202.120.176'
 nic = 'nicbh'
 max_length = 719
+translator = Translator(service_urls=['translate.google.cn'])
+bt_buffer = {}
+
+
+def in_bt_buffer(keyword):
+    out_date_time = 5 * 60
+    now_time = time.time()
+    if keyword in bt_buffer:
+        if now_time - bt_buffer[keyword] < out_date_time:
+            return True
+        else:
+            bt_buffer[keyword] = now_time
+            return False
+    else:
+        bt_buffer[keyword] = now_time
+        return False
 
 
 def send(bot, contact, massage):
@@ -50,6 +68,7 @@ def onQQMessage(bot, contact, member, content):
     # TODO config file
     if '@ME' in content:
         content = content[5:].strip()
+        # look for
         if content == '状态':
             send(bot, contact, '我在哦')
             return
@@ -74,8 +93,25 @@ def onQQMessage(bot, contact, member, content):
                   'https://www.xvideos.com']
             send(bot, contact, random.choice(av))
             return
+
+        # translate
+        if '2' in content.split()[0]:
+            shortLang = {'c': 'zh-cn', 'j': 'ja', 'e': 'en'}
+            sourceLang, targetLang = content.split()[0].lower().split('2')
+            transcode = '{}2{} '.format(sourceLang, targetLang)
+            if content.lower().startswith(transcode):
+                text = content[len(transcode):]
+                if sourceLang in shortLang:
+                    sourceLang = shortLang[sourceLang]
+                if targetLang in shortLang:
+                    targetLang = shortLang[targetLang]
+                if sourceLang in LANGUAGES and targetLang in LANGUAGES:
+                    send(bot, contact, translator.translate(text, targetLang, sourceLang).text)
+                    return
+
+        # bt
         keyword = None
-        if content.startswith('bt '):
+        if content.lower().startswith('bt '):
             keyword = content[3:].strip()
         else:
             position = content.find('-')
@@ -98,12 +134,16 @@ def onQQMessage(bot, contact, member, content):
                 else:
                     send(bot, contact, '搜索"{}"网络错误了哦'.format(keyword))
 
+            if in_bt_buffer(keyword.lower()):
+                send(bot, contact, '刚刚才搜过"{}"了哦'.format(keyword.lower()))
+                return
             netcom = threading.Thread(target=search2, args=(bot, contact, keyword))
             netcom.setDaemon(True)
             netcom.start()
         else:
             send(bot, contact, '@{} 嘤嘤嘤'.format(member.name))
     else:
+        # repeat
         rand = random.randint(0, 100)
         prob = abs(SnowNLP(content).sentiments - 0.5) * 100 / 2
         print_flush(prob)
