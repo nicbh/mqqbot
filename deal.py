@@ -103,7 +103,7 @@ def onQQMessage(bot, contact, member, content):
             sourceLang, targetLang = content.split()[0].lower().split('2')
             transcode = '{}2{} '.format(sourceLang, targetLang)
             if content.lower().startswith(transcode):
-                text = content[len(transcode):]
+                text = content[len(transcode):].strip()
                 if sourceLang in shortLang:
                     sourceLang = shortLang[sourceLang]
                 if targetLang in shortLang:
@@ -112,7 +112,7 @@ def onQQMessage(bot, contact, member, content):
                     send(bot, contact, translator.translate(text, targetLang, sourceLang).text)
                     return
         if content.lower().startswith('detectlang '):
-            text = content[11:]
+            text = content[11:].strip()
             if len(text) > 0:
                 detected = translator.detect(text)
                 send(bot, contact, '{}@{}'.format(detected.lang, detected.confidence))
