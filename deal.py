@@ -97,6 +97,16 @@ def onQQMessage(bot, contact, member, content):
                   'https://www.xvideos.com']
             send(bot, contact, random.choice(av))
             return
+        if content.lower() == 'help':
+            help_text = '''
+                指令：状态, help, 黄图, 黄文/黄段子, 黄网, av
+                src2dest sourceLanguage 源语言翻译到目标语言
+                detectlang text 语言检测
+                languages 语言缩写列表
+                bt keyword 磁力搜索
+                (0<len<9)-(all_len<15) 番号搜索
+            '''
+            send(bot, contact, help_text)
 
         # translate
         if '2' in content.split()[0]:
@@ -155,7 +165,7 @@ def onQQMessage(bot, contact, member, content):
             netcom.setDaemon(True)
             netcom.start()
         else:
-            send(bot, contact, '@{} 嘤嘤嘤'.format(member.name))
+            send(bot, contact, '嘤嘤嘤' if member is None else '@{} 嘤嘤嘤'.format(member.name))
     else:
         # repeat
         rand = random.randint(0, 100)
