@@ -69,8 +69,9 @@ def onQQMessage(bot, contact, member, content):
         content = '[@ME] ' + content.replace(anic, '')
 
     # TODO config file
-    if '@ME' in content:
-        content = content[5:].strip()
+    if '@ME' in content or member is None:
+        if member is not None:
+            content = content[5:].strip()
         # look for
         if content == '状态':
             send(bot, contact, '我在哦')
