@@ -118,7 +118,8 @@ def onQQMessage(bot, contact, member, content):
                 send(bot, contact, '{}@{}'.format(LANGUAGES[detected.lang], detected.confidence))
                 return
         if content.lower() == 'languages':
-            send(bot, contact, json.dumps(LANGUAGES))
+            langs = sorted([(short, long) for short, long in LANGUAGES.items()], key=lambda x: x[0])
+            send(bot, contact, ', '.join(['{}:{}'.format(short, long) for short, long in langs]))
             return
 
         # bt
