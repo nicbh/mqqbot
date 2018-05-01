@@ -98,15 +98,14 @@ def onQQMessage(bot, contact, member, content):
             send(bot, contact, random.choice(av))
             return
         if content.lower() == 'help':
-            help_text = '''
-                指令：状态, help, 黄图, 黄文/黄段子, 黄网, av
-                src2dest sourceLanguage 源语言翻译到目标语言
-                detectlang text 语言检测
-                languages 语言缩写列表
-                bt keyword 磁力搜索
-                (0<len<9)-(all_len<15) 番号搜索
-            '''
+            help_text = '指令：状态, help, 黄图, 黄文/黄段子, 黄网, av\n' + \
+                        'src2dest sourceLanguage 源语言翻译到目标语言\n' + \
+                        'detectlang text 语言检测\n' + \
+                        'languages 语言缩写列表\n' + \
+                        'bt keyword 磁力搜索\n' + \
+                        '(0<len<9)-(all_len<15) 番号搜索'
             send(bot, contact, help_text)
+            return
 
         # translate
         if '2' in content.split()[0]:
