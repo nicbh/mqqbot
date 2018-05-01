@@ -117,6 +117,9 @@ def onQQMessage(bot, contact, member, content):
                 detected = translator.detect(text)
                 send(bot, contact, '{}@{}'.format(LANGUAGES[detected.lang], detected.confidence))
                 return
+        if content.lower() == 'languages':
+            send(bot, contact, json.dumps(LANGUAGES))
+            return
 
         # bt
         keyword = None
