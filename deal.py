@@ -2,7 +2,7 @@
     a plugin in qqbot https://github.com/pandolia/qqbot
 '''
 # TODO: translation
-import random, time, sys, requests, json, threading
+import random, time, sys, requests, json, threading, os
 from snownlp import SnowNLP
 from googletrans import Translator, LANGUAGES
 
@@ -57,6 +57,11 @@ def print_flush(content):
     sys.stdout.flush()
     print(content)
     sys.stdout.flush()
+
+
+def onExit(bot, code, reason, error):
+    if code == 202:
+        os.system('pwd')
 
 
 def onQQMessage(bot, contact, member, content):
