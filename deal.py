@@ -62,6 +62,7 @@ def print_flush(content):
 def onExit(bot, code, reason, error):
     if code == 202:
         os.system('rm *.pickle')
+        os.system('rm *.db')
 
 
 def onQQMessage(bot, contact, member, content):
