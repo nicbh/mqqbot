@@ -5,11 +5,14 @@
 import random, time, sys, requests, json, threading, os
 from snownlp import SnowNLP
 from googletrans import Translator, LANGUAGES
+from qqbot.utf8logger import INFO
+
 
 ip = '144.202.120.176'
 nic = 'nicbh'
 max_length = 719
 translator = Translator(service_urls=['translate.google.cn'])
+rand_generator = random.SystemRandom()
 bt_buffer = {}
 
 
@@ -61,7 +64,9 @@ def print_flush(content):
 
 def onExit(bot, code, reason, error):
     if code == 202:
-        os.system('rm *.pickle')
+        INFO('开始休眠...')
+        time.sleep(60 * 60)
+        INFO('休眠结束')
 
 
 def onQQMessage(bot, contact, member, content):
@@ -172,8 +177,8 @@ def onQQMessage(bot, contact, member, content):
             send(bot, contact, '嘤嘤嘤' if member is None else '@{} 嘤嘤嘤'.format(member.name))
     else:
         # repeat
-        rand = random.randint(0, 100)
-        prob = abs(SnowNLP(content).sentiments - 0.5) * 100 / 2
+        rand = rand_generator.random()
+        prob = abs(SnowNLP(content).sentiments - 0.5) / 2
         print_flush(prob)
         if rand < prob or '二' in content:
             send(bot, contact, content + ' 嘤嘤嘤')
