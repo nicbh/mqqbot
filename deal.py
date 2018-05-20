@@ -1,7 +1,7 @@
 '''
     a plugin in qqbot https://github.com/pandolia/qqbot
 '''
-# TODO: translation
+# TODO: key-value, ml
 import random, time, sys, requests, json, threading, os
 from snownlp import SnowNLP
 from googletrans import Translator, LANGUAGES
