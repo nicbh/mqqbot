@@ -33,6 +33,7 @@ def getResouce(html, browser):
         spans = item.find(class_='option').find_all('span')
         magnet = getMagnet(spans[1].a.attrs['href'], browser)
         name = unquote(magnet[magnet.rfind('=') + 1:])
+        magnet = magnet[0:magnet.rfind('&dn=')]
         time_ = spans[2].b.string
         volume = spans[3].b.string
         files = spans[4].b.string
