@@ -58,7 +58,8 @@ def send(bot, contact, massage):
 
 def print_flush(content):
     sys.stdout.flush()
-    print(content)
+    timestamp = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+    print('[deal@{}] {}'.format(timestamp, content))
     sys.stdout.flush()
 
 
