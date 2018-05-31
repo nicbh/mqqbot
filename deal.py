@@ -65,7 +65,7 @@ def print_flush(content):
 def onExit(bot, code, reason, error):
     if code == 202:
         INFO('开始休眠...')
-        time.sleep(60 * 60)
+        time.sleep(random.randint(3, 10))
         INFO('休眠结束')
 
 
