@@ -13,8 +13,14 @@ import requests, json, time, random
 def sleep(down, up):
     time.sleep(random.random() * (up - down) + up)
 
+def getMagnet(contentUrl, browser):
+    sleep(0.3, 0.7)
+    browser.get(contentUrl)
+    soup = BeautifulSoup(browser.page_source, 'html.parser')
+    magnet = soup.find(class_='magnet')
+    return magnet.a.attrs['href']
 
-def getResouce(html):
+def getResouce(html, browser):
     resource = []
     soup = BeautifulSoup(html, 'html.parser')
     list = soup.find_all('dl')
@@ -25,13 +31,12 @@ def getResouce(html):
     for item in list[0:num]:
         href = item.dt.a.attrs['href']
         spans = item.find(class_='option').find_all('span')
-        magnet = spans[0].a.attrs['href']
+        magnet = getMagnet(spans[1].a.attrs['href'], browser)
         name = unquote(magnet[magnet.rfind('=') + 1:])
-        magnet = magnet[0:magnet.rfind('&dn=')]
-        time_ = spans[1].b.string
-        volume = spans[2].b.string
-        # files = spans[3].b.string
-        hots = spans[5].b.string
+        time_ = spans[2].b.string
+        volume = spans[3].b.string
+        files = spans[4].b.string
+        hots = spans[6].b.string
         index += 1
         resource.append({
             'name': name,
@@ -77,13 +82,13 @@ def search_v2():
         url = browser.current_url
         print(url)
         subclass = ['4']
-        resources = [getResouce(browser.page_source)]
+        resources = [getResouce(browser.page_source, browser)]
         for sub in subclass:
             url = url[0:url.find('/', url.find('search/') + 7)]
             url = '{}/1/{}/0.html'.format(url, sub)
             sleep(0.5, 1.5)
             browser.get(url)
-            resouce = getResouce(browser.page_source)
+            resouce = getResouce(browser.page_source, browser)
             resources.append(resouce)
         response = json.dumps(resources, ensure_ascii=False)
         return response
