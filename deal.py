@@ -8,7 +8,7 @@ from googletrans import Translator, LANGUAGES
 from qqbot.utf8logger import INFO
 
 
-ip = '144.202.120.176'
+ip = '45.77.125.23'
 nic = 'nicbh'
 max_length = 719
 translator = Translator(service_urls=['translate.google.cn'])
