@@ -13,9 +13,16 @@ import requests, json, time, random
 def sleep(down, up):
     time.sleep(random.random() * (up - down) + up)
 
+def open_site(browser, url):
+    try:
+        browser.get(url)
+    except TimeoutException:
+        print('time out after 10 seconds when loading page')
+        browser.execute_script('window.stop()')
+
 def getMagnet(contentUrl, browser):
     sleep(0.3, 0.7)
-    browser.get(contentUrl)
+    open_site(browser, contentUrl)
     soup = BeautifulSoup(browser.page_source, 'html.parser')
     magnet = soup.find(class_='magnet')
     return magnet.a.attrs['href']
@@ -71,11 +78,11 @@ def search_v2():
     browser = webdriver.Chrome(chrome_options=chrome_options)
     try:
         browser.set_window_size(1080, 720)
-        browser.implicitly_wait(20)
+        browser.implicitly_wait(10)
         url = 'http://cnbtkitty.org/'
         keyword = quote(request.form['keyword'])
         sleep(0.5, 1.5)
-        browser.get(url)
+        open_site(browser, url)
         sleep(0.5, 1.5)
         browser.find_element_by_id('kwd').send_keys(keyword)
         sleep(0.5, 1)
@@ -88,7 +95,7 @@ def search_v2():
             url = url[0:url.find('/', url.find('search/') + 7)]
             url = '{}/1/{}/0.html'.format(url, sub)
             sleep(0.5, 1.5)
-            browser.get(url)
+            open_site(browser, url)
             resouce = getResouce(browser.page_source, browser)
             resources.append(resouce)
         response = json.dumps(resources, ensure_ascii=False)
