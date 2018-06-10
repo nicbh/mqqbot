@@ -7,6 +7,7 @@ debian:
 from bs4 import BeautifulSoup
 from urllib.parse import unquote, quote
 from flask import Flask, request
+from selenium.common.exceptions import TimeoutException
 import requests, json, time, random
 
 
@@ -17,7 +18,7 @@ def open_site(browser, url):
     try:
         browser.get(url)
     except TimeoutException:
-        print('time out after 10 seconds when loading page')
+        print('[INFO] time out after 10 seconds when loading {}'.format(url))
         browser.execute_script('window.stop()')
 
 def getMagnet(contentUrl, browser):
@@ -77,8 +78,9 @@ def search_v2():
     response = None
     browser = webdriver.Chrome(chrome_options=chrome_options)
     try:
-        browser.set_window_size(1080, 720)
-        browser.implicitly_wait(10)
+        # browser.set_window_size(1080, 720)
+        browser.set_page_load_timeout(10)
+        browser.set_script_timeout(10)
         url = 'http://cnbtkitty.org/'
         keyword = quote(request.form['keyword'])
         sleep(0.5, 1.5)
