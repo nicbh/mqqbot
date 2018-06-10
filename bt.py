@@ -27,6 +27,7 @@ def open_site(browser, func):
             print('[INFO] start to loading {}'.format(timeout))
             sys.stdout.flush()
             func(browser)
+            success = True
         except TimeoutException:
             print('[INFO] time out after {} seconds when loading'.format(timeout))
             sys.stdout.flush()
