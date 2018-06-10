@@ -17,15 +17,17 @@ def sleep(down, up):
     time.sleep(random.random() * (up - down) + up)
 
 def open_site(browser, func):
+    if type(func) is str:
+        func = lambda b: b.get(func)
     success = False
     timeout = timeout_start
     while success is False and timeout <= timeout_max:
         try:
-            print('[INFO] start to loading')
+            print('[INFO] start to loading {}'.format(timeout))
             sys.stdout.flush()
             func(browser)
         except TimeoutException:
-            print('[INFO] time out after 15 seconds when loading')
+            print('[INFO] time out after {} seconds when loading'.format(timeout))
             sys.stdout.flush()
             try:
                 browser.execute_script('window.stop()')
@@ -101,7 +103,7 @@ def search_v2():
         url = 'http://cnbtkitty.org/'
         keyword = quote(request.form['keyword'])
         sleep(0.5, 1.5)
-        open_site(browser, lambda b: b.get(url))
+        open_site(browser, url)
         # sleep(0.5, 1.5)
         browser.find_element_by_id('kwd').send_keys(keyword)
         sleep(0.5, 1)
