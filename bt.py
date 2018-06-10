@@ -16,6 +16,7 @@ def sleep(down, up):
 
 def open_site(browser, url):
     try:
+        print('[INFO] start to loading {}'.format(url))
         browser.get(url)
     except TimeoutException:
         print('[INFO] time out after 10 seconds when loading {}'.format(url))
