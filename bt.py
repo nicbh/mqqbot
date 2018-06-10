@@ -10,19 +10,33 @@ from flask import Flask, request
 from selenium.common.exceptions import TimeoutException
 import requests, json, time, random, sys
 
+timeout_start = 10
+timeout_max = 60
 
 def sleep(down, up):
     time.sleep(random.random() * (up - down) + up)
 
-def open_site(browser, url):
-    try:
-        print('[INFO] start to loading {}'.format(url))
-        sys.stdout.flush()
-        browser.get(url)
-    except TimeoutException:
-        print('[INFO] time out after 15 seconds when loading {}'.format(url))
-        sys.stdout.flush()
-        browser.execute_script('window.stop()')
+def open_site(browser, func):
+    success = False
+    timeout = timeout_start
+    while success is False and timeout <= timeout_max:
+        try:
+            print('[INFO] start to loading')
+            sys.stdout.flush()
+            func(browser)
+        except TimeoutException:
+            print('[INFO] time out after 15 seconds when loading')
+            sys.stdout.flush()
+            try:
+                browser.execute_script('window.stop()')
+                success = True
+            except TimeoutException:
+                timeout += 5
+                browser.set_page_load_timeout(timeout)
+                browser.set_script_timeout(timeout)
+    browser.set_page_load_timeout(timeout_start)
+    browser.set_script_timeout(timeout_start)
+
 
 def getMagnet(contentUrl, browser):
     sleep(0.3, 0.7)
@@ -82,19 +96,16 @@ def search_v2():
     browser = webdriver.Chrome(chrome_options=chrome_options)
     try:
         # browser.set_window_size(1080, 720)
-        browser.set_page_load_timeout(15)
-        browser.set_script_timeout(15)
+        browser.set_page_load_timeout(timeout_start)
+        browser.set_script_timeout(timeout_start)
         url = 'http://cnbtkitty.org/'
         keyword = quote(request.form['keyword'])
         sleep(0.5, 1.5)
-        open_site(browser, url)
+        open_site(browser, lambda b: b.get(url))
         # sleep(0.5, 1.5)
         browser.find_element_by_id('kwd').send_keys(keyword)
         sleep(0.5, 1)
-        try:
-            browser.find_element_by_id('kwd').send_keys(Keys.ENTER)
-        except TimeoutException:
-            browser.execute_script('window.stop()')
+        open_site(browser, lambda b: b.find_element_by_id('kwd').send_keys(Keys.ENTER))
         url = browser.current_url
         print(url)
         subclass = ['4']
