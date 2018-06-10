@@ -72,7 +72,7 @@ def search_v2():
     try:
         browser.set_window_size(1080, 720)
         browser.implicitly_wait(20)
-        url = 'http://cnbtkitty.net/'
+        url = 'http://cnbtkitty.org/'
         keyword = quote(request.form['keyword'])
         sleep(0.5, 1.5)
         browser.get(url)
