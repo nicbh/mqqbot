@@ -27,7 +27,10 @@ def open_site(browser, func):
         try:
             print('[INFO] start to loading {}'.format(url))
             sys.stdout.flush()
-            func(browser)
+            if timeout == timeout_start:
+                func(browser)
+            else:
+                browser.refresh()
             success = True
         except TimeoutException:
             print('[INFO] time out after {} seconds when loading'.format(timeout))
