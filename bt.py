@@ -17,6 +17,7 @@ def sleep(down, up):
     time.sleep(random.random() * (up - down) + up)
 
 def open_site(browser, func):
+    url = ''
     if type(func) is str:
         url = func
         func = lambda b: b.get(url)
@@ -24,7 +25,7 @@ def open_site(browser, func):
     timeout = timeout_start
     while success is False and timeout <= timeout_max:
         try:
-            print('[INFO] start to loading {}'.format(timeout))
+            print('[INFO] start to loading {}'.format(url))
             sys.stdout.flush()
             func(browser)
             success = True
