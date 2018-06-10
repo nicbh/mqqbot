@@ -18,7 +18,8 @@ def sleep(down, up):
 
 def open_site(browser, func):
     if type(func) is str:
-        func = lambda b: b.get(func)
+        url = func
+        func = lambda b: b.get(url)
     success = False
     timeout = timeout_start
     while success is False and timeout <= timeout_max:
