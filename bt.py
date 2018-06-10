@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import unquote, quote
 from flask import Flask, request
 from selenium.common.exceptions import TimeoutException
-import requests, json, time, random
+import requests, json, time, random, sys
 
 
 def sleep(down, up):
@@ -17,9 +17,11 @@ def sleep(down, up):
 def open_site(browser, url):
     try:
         print('[INFO] start to loading {}'.format(url))
+        sys.stdout.flush()
         browser.get(url)
     except TimeoutException:
         print('[INFO] time out after 10 seconds when loading {}'.format(url))
+        sys.stdout.flush()
         browser.execute_script('window.stop()')
 
 def getMagnet(contentUrl, browser):
@@ -89,7 +91,10 @@ def search_v2():
         sleep(0.5, 1.5)
         browser.find_element_by_id('kwd').send_keys(keyword)
         sleep(0.5, 1)
-        browser.find_element_by_id('kwd').send_keys(Keys.ENTER)
+        try:
+            browser.find_element_by_id('kwd').send_keys(Keys.ENTER)
+        except TimeoutException:
+            browser.execute_script('window.stop()')
         url = browser.current_url
         print(url)
         subclass = ['4']
