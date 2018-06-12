@@ -10,7 +10,7 @@ from flask import Flask, request
 from selenium.common.exceptions import TimeoutException
 import requests, json, time, random, sys
 
-timeout_start = 15
+timeout_start = 5
 timeout_max = 60
 
 def sleep(down, up):
