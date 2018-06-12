@@ -154,21 +154,23 @@ def onQQMessage(bot, contact, member, content):
         print_flush('[btInfo]: "{}", "{}"'.format(content, keyword))
         if keyword is not None and len(keyword) > 0:
             def search2(bot, contact, keyword):
-                r = requests.post('http://{}:5000/search2'.format(ip), data={'keyword': keyword}, timeout=60)
-                print_flush('[btInfo]: "{}", {}'.format(keyword, r.ok))
-                if r.ok:
-                    data = json.loads(r.text)
-                    response = ['相关排序:'] + ['{}.{}\n时间:{} 大小:{} 人气:{}\n{}'.format(
-                        x['num'], x['name'], x['time'], x['volume'], x['hot'], x['magnet'])
-                        for x in data[0]]
-                    send(bot, contact, response)
-                    response = ['人气排序:'] + ['{}.{}\n时间:{} 大小:{} 人气:{}\n{}'.format(
-                        x['num'], x['name'], x['time'], x['volume'], x['hot'], x['magnet'])
-                        for x in data[1]]
-                    send(bot, contact, response)
-                else:
+                try:
+                    r = requests.post('http://{}:5000/search2'.format(ip), data={'keyword': keyword}, timeout=60)
+                    print_flush('[btInfo]: "{}", {}'.format(keyword, r.ok))
+                    if r.ok:
+                        data = json.loads(r.text)
+                        response = ['相关排序:'] + ['{}.{}\n时间:{} 大小:{} 人气:{}\n{}'.format(
+                            x['num'], x['name'], x['time'], x['volume'], x['hot'], x['magnet'])
+                            for x in data[0]]
+                        send(bot, contact, response)
+                        response = ['人气排序:'] + ['{}.{}\n时间:{} 大小:{} 人气:{}\n{}'.format(
+                            x['num'], x['name'], x['time'], x['volume'], x['hot'], x['magnet'])
+                            for x in data[1]]
+                        send(bot, contact, response)
+                    else:
+                        send(bot, contact, '搜索"{}"网络错误了哦'.format(keyword))
+                except requests.exceptions.TimeoutError:
                     send(bot, contact, '搜索"{}"网络错误了哦'.format(keyword))
-
             if in_bt_buffer(keyword.lower()):
                 send(bot, contact, '刚刚才搜过"{}"了哦'.format(keyword.lower()))
                 return
