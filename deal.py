@@ -154,7 +154,7 @@ def onQQMessage(bot, contact, member, content):
         print_flush('[btInfo]: "{}", "{}"'.format(content, keyword))
         if keyword is not None and len(keyword) > 0:
             def search2(bot, contact, keyword):
-                r = requests.post('http://{}:5000/search2'.format(ip), data={'keyword': keyword})
+                r = requests.post('http://{}:5000/search2'.format(ip), data={'keyword': keyword}, timeout=60)
                 print_flush('[btInfo]: "{}", {}'.format(keyword, r.ok))
                 if r.ok:
                     data = json.loads(r.text)
