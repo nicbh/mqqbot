@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import unquote, quote
 from flask import Flask, request
 from selenium.common.exceptions import TimeoutException
-import requests, json, time, random, sys
+import requests, json, time, random, sys, os
 
 timeout_start = 5
 timeout_max = 60
@@ -185,9 +185,11 @@ def search():
 
 
 if __name__ == '__main__':
-    try:
+    argv = sys.argv
+    if len(argv) > 0 and argv[0].endswith('.py'):
+        argv.pop(0)
+    if len(argv) > 0 and argv[0].lower() == 'stop':
+        os.system(kill $(ps aux | grep 'chromedrive[r]' | awk '{print $2}'))
+        os.system(kill $(ps aux | grep 'bt.p[y]' | awk '{print $2}'))
+    else:
         app.run(debug=False, host='0.0.0.0')
-    finally:
-        browser = webdriver.Chrome(chrome_options=chrome_options)
-        browser.quit()
-        print('service close\n')
