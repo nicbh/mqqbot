@@ -39,6 +39,7 @@ def open_site(browser, func):
                 browser.execute_script('window.stop()')
                 success = True
             except TimeoutException:
+                sleep(0.5, 1 + timeout / 10)
                 timeout += 5
                 browser.set_page_load_timeout(timeout)
                 browser.set_script_timeout(timeout)
@@ -109,7 +110,6 @@ def search_v2():
     response = None
     browser = webdriver.Chrome(chrome_options=chrome_options)
     try:
-        # browser.set_window_size(1080, 720)
         browser.set_page_load_timeout(timeout_start)
         browser.set_script_timeout(timeout_start)
         url = 'http://cnbtkitty.org/'
