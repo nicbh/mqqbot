@@ -189,7 +189,7 @@ if __name__ == '__main__':
     if len(argv) > 0 and argv[0].endswith('.py'):
         argv.pop(0)
     if len(argv) > 0 and argv[0].lower() == 'stop':
-        os.system(kill $(ps aux | grep 'chromedrive[r]' | awk '{print $2}'))
-        os.system(kill $(ps aux | grep 'bt.p[y]' | awk '{print $2}'))
+        os.system("kill $(ps aux | grep 'chromedrive[r]' | awk '{print $2}')")
+        os.system("kill $(ps aux | grep 'bt.p[y]' | awk '{print $2}')")
     else:
         app.run(debug=False, host='0.0.0.0')
