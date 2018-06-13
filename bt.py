@@ -63,6 +63,9 @@ def getResouce(html, browser):
     if len(list) < num:
         num = len(list)
     for item in list[0:num]:
+        href = item.dt.a
+        if href is None:
+            return None
         href = item.dt.a.attrs['href']
         spans = item.find(class_='option').find_all('span')
         magnet = getMagnet(spans[1].a.attrs['href'], browser)
@@ -131,6 +134,7 @@ def search_v2():
             open_site(browser, url)
             resouce = getResouce(browser.page_source, browser)
             resources.append(resouce)
+        resources = [x for x in resources if x is not None]
         response = json.dumps(resources, ensure_ascii=False)
         return response
     finally:
