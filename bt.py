@@ -94,9 +94,15 @@ chrome_options.add_argument('--headless')
 chrome_options.add_argument('--disable-gpu')
 chrome_options.add_argument('--no-sandbox')
 chrome_options.binary_location = '/opt/google/chrome/chrome'
+prefs = {
+    'profile.default_content_setting_values': {
+        'images': 2,
+        'javascript':2
+    }
+}
+chrome_options.add_experimental_option('prefs',prefs)  
 
 app = Flask(__name__)
-
 
 @app.route('/search2', methods=['POST'])
 def search_v2():
