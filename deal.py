@@ -161,6 +161,7 @@ def onQQMessage(bot, contact, member, content):
                         data = json.loads(r.text)
                         if len(data) == 0:
                             send(bot, contact, '找不到"{}"的资源哦'.format(keyword))
+                            return
                         response = ['相关排序:'] + ['{}.{}\n时间:{} 大小:{} 人气:{}\n{}'.format(
                             x['num'], x['name'], x['time'], x['volume'], x['hot'], x['magnet'])
                             for x in data[0]]
