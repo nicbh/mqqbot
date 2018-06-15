@@ -40,7 +40,8 @@ def open_site(browser, func):
                 success = True
             except TimeoutException:
                 sleep(0.5, 1 + timeout / 10)
-                timeout += 5
+                timeout += 10
+                url = browser.current_url
                 browser.set_page_load_timeout(timeout)
                 browser.set_script_timeout(timeout)
     browser.set_page_load_timeout(timeout_start)
@@ -109,14 +110,15 @@ chrome_options.add_experimental_option('prefs',prefs)
 app = Flask(__name__)
 
 @app.route('/search2', methods=['POST'])
-def search_v2():
+def search_v2(keyword=None):
     response = None
     browser = webdriver.Chrome(chrome_options=chrome_options)
     try:
         browser.set_page_load_timeout(timeout_start)
         browser.set_script_timeout(timeout_start)
         url = 'http://cnbtkitty.org/'
-        keyword = quote(request.form['keyword'])
+        if keyword is None:
+            keyword = quote(request.form['keyword'])
         sleep(0.5, 1.5)
         open_site(browser, url)
         # sleep(0.5, 1.5)
@@ -188,8 +190,11 @@ if __name__ == '__main__':
     argv = sys.argv
     if len(argv) > 0 and argv[0].endswith('.py'):
         argv.pop(0)
-    if len(argv) > 0 and argv[0].lower() == 'stop':
-        os.system("kill $(ps aux | grep 'chromedrive[r]' | awk '{print $2}')")
-        os.system("kill $(ps aux | grep 'bt.p[y]' | awk '{print $2}')")
+    if len(argv) > 0:
+        if argv[0].lower() == 'stop':
+            os.system("kill $(ps aux | grep 'chromedrive[r]' | awk '{print $2}')")
+            os.system("kill $(ps aux | grep 'bt.p[y]' | awk '{print $2}')")
+        elif argv[0].lower() == 'kw':
+            print(search_v2(argv[1]))
     else:
         app.run(debug=False, host='0.0.0.0')
