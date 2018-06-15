@@ -25,7 +25,7 @@ def open_site(browser, func):
     timeout = timeout_start
     while success is False and timeout <= timeout_max:
         try:
-            print('[INFO] start to loading {}'.format(url))
+            print('[INFO] start to loading {} in {}s'.format(url, timeout))
             sys.stdout.flush()
             if timeout == timeout_start:
                 func(browser)
@@ -195,6 +195,7 @@ if __name__ == '__main__':
             os.system("kill $(ps aux | grep 'chromedrive[r]' | awk '{print $2}')")
             os.system("kill $(ps aux | grep 'bt.p[y]' | awk '{print $2}')")
         elif argv[0].lower() == 'kw':
+            print('start to search keywork "{}"...'.format(argv[1]))
             print(search_v2(argv[1]))
     else:
         app.run(debug=False, host='0.0.0.0')
