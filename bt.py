@@ -10,7 +10,7 @@ from flask import Flask, request
 from selenium.common.exceptions import TimeoutException
 import requests, json, time, random, sys, os
 
-timeout_start = 5
+timeout_start = 10
 timeout_max = 60
 
 def sleep(down, up):
@@ -98,6 +98,8 @@ chrome_options = Options()
 chrome_options.add_argument('--headless')
 chrome_options.add_argument('--disable-gpu')
 chrome_options.add_argument('--no-sandbox')
+extension_path = os.getcwd() + '/stoppper'
+chrome_options.add_extension(extension_path)
 chrome_options.binary_location = '/opt/google/chrome/chrome'
 prefs = {
     'profile.default_content_setting_values': {
