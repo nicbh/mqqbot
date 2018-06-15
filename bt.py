@@ -98,7 +98,7 @@ chrome_options = Options()
 chrome_options.add_argument('--headless')
 chrome_options.add_argument('--disable-gpu')
 chrome_options.add_argument('--no-sandbox')
-extension_path = os.getcwd() + '/stopper'
+extension_path = os.getcwd() + '/stopper/stopper.crx'
 chrome_options.add_extension(extension_path)
 chrome_options.binary_location = '/opt/google/chrome/chrome'
 prefs = {
