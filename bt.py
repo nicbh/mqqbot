@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import unquote, quote
 from flask import Flask, request
 from selenium.common.exceptions import TimeoutException
-import requests, json, time, random, sys, os
+import requests, json, time, random, sys, os, time
 
 timeout_start = 10
 timeout_max = 60
@@ -26,7 +26,7 @@ def open_site(browser, func):
     timeout = timeout_start
     while success is False and timeout <= timeout_max:
         try:
-            print('[INFO] start to loading {} in {}s'.format(url, timeout))
+            print('[INFO {}] start to loading {} in {}s'.format(time.ctime(), url, timeout))
             sys.stdout.flush()
             if timeout == timeout_start:
                 func(browser)
@@ -34,7 +34,7 @@ def open_site(browser, func):
                 browser.refresh()
             success = True
         except TimeoutException:
-            print('[INFO] time out after {} seconds when loading'.format(timeout))
+            print('[INFO {}] time out after {} seconds when loading'.format(time.ctime(), timeout))
             sys.stdout.flush()
             try:
                 browser.execute_script('window.stop()')
