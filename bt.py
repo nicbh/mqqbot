@@ -1,4 +1,3 @@
-# -*- coding: UTF-8 -*-
 '''
 debian:
     google-chrome chromedriver
@@ -16,7 +15,6 @@ import random
 import sys
 import os
 import time
-import imp
 
 timeout_start = 20
 timeout_max = 60
@@ -60,6 +58,13 @@ def open_site(browser, func):
     browser.set_script_timeout(timeout_start)
 
 
+def url2hash(url):
+    return url.split('/')[-1]
+
+
+def url2magnet(url):
+    return 'magnet:?xt=urn:btih:' + url2hash(url)
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
@@ -81,18 +86,94 @@ chrome_options.add_experimental_option('prefs', prefs)
 
 app = Flask(__name__)
 
+
 @app.route('/search_btso', methods=['POST'])
 def search_btso(keyword=None):
     response = None
     browser = webdriver.Chrome(chrome_options=chrome_options)
     try:
-        pass
+        length = 5
+        if keyword is None:
+            keyword = request.form['keyword']
+            if 'length' in request.form:
+                length = request.form['length']
+                if length > 30:
+                    length = 30
+        url = 'https://btso.pw/search/{}'.format(keyword)
+        resources = []
+        sleep(0.5, 1.5)
+        open_site(browser, url)
+        soup = BeautifulSoup(browser.page_source, 'html.parser')
+        data_list = soup.find(class_='data_list')
+        if data_list is not None:
+            data_list = data_list.find_all('div')[1:]
+            index = 0
+            for item in data_list[0:length]:
+                name = item.a.attrs['title']
+                href = item.a.attrs['href']
+                magnet = url2magnet(href)
+                time_ = item.find(class_='date')
+                volume = item.find(class_='size')
+                index += 1
+                resources.append({
+                    'name': name,
+                    'num': index,
+                    'href': href,
+                    'magnet': magnet,
+                    'time': time_,
+                    'volume': volume
+                })
+        resources = [x for x in resources if x is not None]
+        response = json.dumps(resources, ensure_ascii=False)
+        return response
     finally:
         browser.close()
 
 
-@app.route('/search2', methods=['POST'])
-def search_v2(keyword=None):
+@app.route('/search_bt2', methods=['POST'])
+def search_btrabbit(keyword=None):
+    response = None
+    browser = webdriver.Chrome(chrome_options=chrome_options)
+    try:
+        length = 5
+        if keyword is None:
+            keyword = request.form['keyword']
+            if 'length' in request.form:
+                length = request.form['length']
+                if length > 30:
+                    length = 30
+        url = 'https://btso.pw/search/{}'.format(keyword)
+        resources = []
+        sleep(0.5, 1.5)
+        open_site(browser, url)
+        soup = BeautifulSoup(browser.page_source, 'html.parser')
+        data_list = soup.find(class_='data_list')
+        if data_list is not None:
+            data_list = data_list.find_all('div')[1:]
+            index = 0
+            for item in data_list[0:length]:
+                name = item.a.attrs['title']
+                href = item.a.attrs['href']
+                magnet = url2magnet(href)
+                time_ = item.find(class_='date')
+                volume = item.find(class_='size')
+                index += 1
+                resources.append({
+                    'name': name,
+                    'num': index,
+                    'href': href,
+                    'magnet': magnet,
+                    'time': time_,
+                    'volume': volume
+                })
+        resources = [x for x in resources if x is not None]
+        response = json.dumps(resources, ensure_ascii=False)
+        return response
+    finally:
+        browser.close()
+
+@app.route('/search_bt', methods=['POST'])
+def search_cnbtkitty(keyword=None):
     def getMagnet(contentUrl, browser):
         sleep(0.3, 0.7)
         open_site(browser, contentUrl)
@@ -141,7 +222,8 @@ def search_v2(keyword=None):
         browser.set_script_timeout(timeout_start)
         url = 'http://cnbtkitty.org/'
         if keyword is None:
-            keyword = quote(request.form['keyword'])
+            keyword = request.form['keyword']
+        keyword = quote(keyword)
         sleep(0.5, 1.5)
         open_site(browser, url)
         # sleep(0.5, 1.5)
@@ -220,8 +302,22 @@ if __name__ == '__main__':
                 "kill $(ps aux | grep 'chromedrive[r]' | awk '{print $2}')")
             os.system("kill $(ps aux | grep 'bt.p[y]' | awk '{print $2}')")
         elif argv[0].lower() == 'kw':
-            imp.reload(sys)
-            print('start to search keyword "{}"...'.format(argv[1]))
-            print(quote(search_v2(argv[1])))
+            mode = 'bt'
+            if argv[1].lower() == 'btso':
+                keyword = argv[2]
+                mode = 'btso'
+            elif argv[1].lower() == 'bt2':
+                keyword = argv[2]
+                mode = 'bt2'
+            else:
+                keyword = argv[1]
+            print('start to search keyword "{}"...'.format(keyword))
+            if mode == 'bt':
+                response = search_cnbtkitty(keyword)
+            elif mode =='btso':
+                response = search_btso(keyword)
+            elif mode=='bt2':
+                response = search_btrabbit(keyword)
+            print(quote(response))
     else:
         app.run(debug=False, host='0.0.0.0')
