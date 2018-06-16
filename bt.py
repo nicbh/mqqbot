@@ -83,7 +83,7 @@ app = Flask(__name__)
 
 @app.route('/search_btso', methods=['POST'])
 def search_btso(keyword=None):
-
+    pass
 
 @app.route('/search2', methods=['POST'])
 def search_v2(keyword=None):
