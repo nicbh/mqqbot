@@ -83,7 +83,13 @@ app = Flask(__name__)
 
 @app.route('/search_btso', methods=['POST'])
 def search_btso(keyword=None):
-    pass
+    response = None
+    browser = webdriver.Chrome(chrome_options=chrome_options)
+    try:
+        pass
+    finally:
+        browser.close()
+
 
 @app.route('/search2', methods=['POST'])
 def search_v2(keyword=None):
@@ -216,6 +222,6 @@ if __name__ == '__main__':
         elif argv[0].lower() == 'kw':
             imp.reload(sys)
             print('start to search keyword "{}"...'.format(argv[1]))
-            print(search_v2(argv[1]))
+            print(quote(search_v2(argv[1])))
     else:
         app.run(debug=False, host='0.0.0.0')
