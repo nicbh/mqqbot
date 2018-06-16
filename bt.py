@@ -11,7 +11,7 @@ from flask import Flask, request
 from selenium.common.exceptions import TimeoutException
 import requests, json, time, random, sys, os, time
 
-timeout_start = 10
+timeout_start = 20
 timeout_max = 60
 
 def sleep(down, up):
@@ -198,7 +198,7 @@ if __name__ == '__main__':
             os.system("kill $(ps aux | grep 'chromedrive[r]' | awk '{print $2}')")
             os.system("kill $(ps aux | grep 'bt.p[y]' | awk '{print $2}')")
         elif argv[0].lower() == 'kw':
-            print('start to search keywork "{}"...'.format(argv[1]))
+            print('start to search keyword "{}"...'.format(argv[1]))
             print(search_v2(argv[1]))
     else:
         app.run(debug=False, host='0.0.0.0')
