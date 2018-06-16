@@ -16,6 +16,7 @@ import random
 import sys
 import os
 import time
+import imp
 
 timeout_start = 20
 timeout_max = 60
@@ -79,6 +80,9 @@ prefs = {
 chrome_options.add_experimental_option('prefs', prefs)
 
 app = Flask(__name__)
+
+@app.route('/search_btso', methods=['POST'])
+def search_btso(keyword=None):
 
 
 @app.route('/search2', methods=['POST'])
@@ -210,8 +214,7 @@ if __name__ == '__main__':
                 "kill $(ps aux | grep 'chromedrive[r]' | awk '{print $2}')")
             os.system("kill $(ps aux | grep 'bt.p[y]' | awk '{print $2}')")
         elif argv[0].lower() == 'kw':
-            reload(sys)
-            sys.setdefaultencoding("utf-8")
+            imp.reload(sys)
             print('start to search keyword "{}"...'.format(argv[1]))
             print(search_v2(argv[1]))
     else:
