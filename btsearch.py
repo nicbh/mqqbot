@@ -110,7 +110,9 @@ def search_btso(keyword=None):
         sleep(0.5, 1.5)
         open_site(browser, url)
         if debug is True:
-            print('[html] ' + str(browser.page_source))
+            with open('a.html','w+',encoding='utf-8') as file:
+                file.write(browser.page_source)
+            print('[html] save')
         soup = BeautifulSoup(browser.page_source, 'html.parser')
         data_list = soup.find(class_='data-list')
         if data_list is not None:
