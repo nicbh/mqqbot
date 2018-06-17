@@ -160,7 +160,7 @@ def search_btrabbit(keyword=None):
                 time_ = bar[1].b.string
                 volume = bar[2].b.string
                 hots = bar[3].b.string
-                lass = bar[4].b.string
+                lasts = bar[4].b.string
                 index += 1
                 resources.append({
                     'name': name,
