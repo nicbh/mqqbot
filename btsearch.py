@@ -108,9 +108,9 @@ def search_btso(keyword=None):
         soup = BeautifulSoup(browser.page_source, 'html.parser')
         data_list = soup.find(class_='data-list')
         if data_list is not None:
-            data_list = data_list.find_all('div')[1:]
+            data_list = [x for x in data_list.contents if x != '\n']
             index = 0
-            for item in data_list[0:length]:
+            for item in data_list[1:length]:
                 name = item.a.attrs['title']
                 href = item.a.attrs['href']
                 magnet = url2magnet(href)
