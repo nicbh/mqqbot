@@ -176,7 +176,7 @@ def onQQMessage(bot, contact, member, content):
         if keyword is not None and len(keyword) > 0 and btmode is not None:
             print_flush('[btInfo]: "{}", "{}"'.format(content, keyword))
 
-            def search2(bot, contact, keyword, mode):
+            def search_bt(bot, contact, keyword, mode):
                 def resp2resp(resp):
                     response = []
                     for item in resp:
@@ -205,7 +205,7 @@ def onQQMessage(bot, contact, member, content):
                         if len(data) == 0:
                             send(bot, contact, '找不到"{}"的资源哦'.format(keyword))
                             return
-                        if btmode == 'bt':
+                        if mode == 'bt':
                             response = ['相关排序:'] + resp2resp(data[0])
                             send(bot, contact, response)
                             response = ['人气排序:'] + resp2resp(data[1])
@@ -222,7 +222,7 @@ def onQQMessage(bot, contact, member, content):
                 send(bot, contact, '刚刚才搜过"{}"了哦'.format(keyword.lower()))
                 return
             netcom = threading.Thread(
-                target=search2, args=(bot, contact, keyword))
+                target=search_bt, args=(bot, contact, keyword, btmode))
             netcom.setDaemon(True)
             netcom.start()
 
