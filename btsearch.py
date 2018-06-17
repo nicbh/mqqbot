@@ -21,6 +21,7 @@ from selenium.common.exceptions import TimeoutException
 
 timeout_start = 20
 timeout_max = 60
+debug = True
 
 
 def sleep(down, up):
@@ -99,6 +100,8 @@ def search_btso(keyword=None):
         length = 5
         if keyword is None:
             keyword = request.form['keyword']
+            if debug is True:
+                print('[keyword]: ' + keyword)
             if 'length' in request.form:
                 length = request.form['length']
         url = 'https://btso.pw/search/{}'.format(keyword)
@@ -127,6 +130,8 @@ def search_btso(keyword=None):
                 })
         resources = [x for x in resources if x is not None]
         response = json.dumps(resources, ensure_ascii=False)
+        if debug is True:
+            print('[resp]: ' + response)
         return response
     finally:
         browser.close()
@@ -140,6 +145,8 @@ def search_btrabbit(keyword=None):
         length = 5
         if keyword is None:
             keyword = request.form['keyword']
+            if debug is True:
+                print('[keyword]: ' + keyword)
             if 'length' in request.form:
                 length = request.form['length']
         url = 'https://www.btrabbit.tv/search/{}/default-1.html'.format(
@@ -175,6 +182,8 @@ def search_btrabbit(keyword=None):
                 })
         resources = [x for x in resources if x is not None]
         response = json.dumps(resources, ensure_ascii=False)
+        if debug is True:
+            print('[resp]: ' + response)
         return response
     finally:
         browser.close()
@@ -252,6 +261,8 @@ def search_cnbtkitty(keyword=None):
             resources.append(resouce)
         resources = [x for x in resources if x is not None]
         response = json.dumps(resources, ensure_ascii=False)
+        if debug is True:
+            print('[resp]: ' + response)
         return response
     finally:
         browser.close()
