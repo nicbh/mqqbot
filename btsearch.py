@@ -114,8 +114,8 @@ def search_btso(keyword=None):
                 name = item.a.attrs['title']
                 href = item.a.attrs['href']
                 magnet = url2magnet(href)
-                time_ = item.find(class_='date')
-                volume = item.find(class_='size')
+                time_ = item.find(class_='date').string
+                volume = item.find(class_='size').string
                 index += 1
                 resources.append({
                     'name': name,
