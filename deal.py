@@ -2,7 +2,13 @@
     a plugin in qqbot https://github.com/pandolia/qqbot
 '''
 # TODO: key-value, ml
-import random, time, sys, requests, json, threading, os
+import random
+import time
+import sys
+import requests
+import json
+import threading
+import os
 from snownlp import SnowNLP
 from googletrans import Translator, LANGUAGES
 from qqbot.utf8logger import INFO
@@ -88,11 +94,13 @@ def onQQMessage(bot, contact, member, content):
             send(bot, contact, '我在哦')
             return
         if content == '黄漫' or content.lower() == 'hentai':
-            hhentai = ['https://hanime.tv', 'http://hentaiplay.net', 'https://e-hentai.org']
+            hhentai = ['https://hanime.tv',
+                       'http://hentaiplay.net', 'https://e-hentai.org']
             send(bot, contact, random.choice(hhentai))
             return
         if content == '黄图':
-            hpic = ['https://www.pixiv.net', 'http://konachan.com', 'https://www.tumblr.com', 'https://www.lofter.com']
+            hpic = ['https://www.pixiv.net', 'http://konachan.com',
+                    'https://www.tumblr.com', 'https://www.lofter.com']
             send(bot, contact, random.choice(hpic))
             return
         if content == '黄文' or content == '黄段子':
@@ -130,56 +138,95 @@ def onQQMessage(bot, contact, member, content):
                 if targetLang in shortLang:
                     targetLang = shortLang[targetLang]
                 if sourceLang in LANGUAGES and targetLang in LANGUAGES and len(text) > 0:
-                    send(bot, contact, translator.translate(text, targetLang, sourceLang).text)
+                    send(bot, contact, translator.translate(
+                        text, targetLang, sourceLang).text)
                     return
         if content.lower().startswith('detectlang '):
             text = content[11:].strip()
             if len(text) > 0:
                 detected = translator.detect(text)
-                send(bot, contact, '{}@{}'.format(LANGUAGES[detected.lang], detected.confidence))
+                send(bot, contact, '{}@{}'.format(
+                    LANGUAGES[detected.lang], detected.confidence))
                 return
         if content.lower() == 'languages':
-            langs = sorted([(short, long) for short, long in LANGUAGES.items()], key=lambda x: x[0])
-            send(bot, contact, ', '.join(['{}:{}'.format(short, long) for short, long in langs]))
+            langs = sorted(
+                [(short, long) for short, long in LANGUAGES.items()], key=lambda x: x[0])
+            send(bot, contact, ', '.join(
+                ['{}:{}'.format(short, long) for short, long in langs]))
             return
 
         # bt
         keyword = None
-        if content.lower().startswith('bt '):
-            keyword = content[3:].strip()
+        btmode = None
+        if content.lower().startswith('bt'):
+            cmd = content.lower().split()[0]
+            if cmd == 'bt':
+                keyword = content[3:].strip()
+                btmode = 'bt'
+            elif cmd == 'bt2':
+                keyword = content[4:].strip()
+                btmode = 'bt2'
+            elif cmd == 'btso':
+                keyword = content[5:].strip()
+                btmode = 'btso'
         else:
             position = content.find('-')
             if 0 < position < 9 and len(content) < 15:
                 keyword = content.replace(' ', '')
-        print_flush('[btInfo]: "{}", "{}"'.format(content, keyword))
-        if keyword is not None and len(keyword) > 0:
-            def search2(bot, contact, keyword):
+        if keyword is not None and len(keyword) > 0 and btmode is not None:
+            print_flush('[btInfo]: "{}", "{}"'.format(content, keyword))
+
+            def search2(bot, contact, keyword, mode):
+                def resp2resp(resp):
+                    response = []
+                    for item in resp:
+                        title = '{}.{}'.format(item['num']. item['name'])
+                        info = []
+                        if 'type' in item:
+                            info.append('类型:{}'.format(item['time']))
+                        if 'time' in item:
+                            info.append('时间:{}'.format(item['time']))
+                        if 'volume' in item:
+                            info.append('大小:{}'.format(item['time']))
+                        if 'hot' in item:
+                            info.append('人气:{}'.format(item['time']))
+                        if 'last' in item:
+                            info.append('最近:{}'.format(item['time']))
+                        content = '{}'.format(item['magnet'])
+                        response.append('{}\n{}\n{}'.format(
+                            title, ' '.join(info), content))
+                    return response
                 try:
-                    r = requests.post('http://{}:5000/search_bt'.format(ip), data={'keyword': keyword}, timeout=60*10)
+                    r = requests.post(
+                        'http://{}:5000/search_{}'.format(ip, mode), data={'keyword': keyword}, timeout=60 * 10)
                     print_flush('[btInfo]: "{}", {}'.format(keyword, r.ok))
                     if r.ok:
                         data = json.loads(r.text)
                         if len(data) == 0:
                             send(bot, contact, '找不到"{}"的资源哦'.format(keyword))
                             return
-                        response = ['相关排序:'] + ['{}.{}\n时间:{} 大小:{} 人气:{}\n{}'.format(
-                            x['num'], x['name'], x['time'], x['volume'], x['hot'], x['magnet'])
-                            for x in data[0]]
-                        send(bot, contact, response)
-                        response = ['人气排序:'] + ['{}.{}\n时间:{} 大小:{} 人气:{}\n{}'.format(
-                            x['num'], x['name'], x['time'], x['volume'], x['hot'], x['magnet'])
-                            for x in data[1]]
-                        send(bot, contact, response)
+                        if btmode == 'bt':
+                            response = ['相关排序:'] + resp2resp(data[0])
+                            send(bot, contact, response)
+                            response = ['人气排序:'] + resp2resp(data[1])
+                            send(bot, contact, response)
+                        else:
+                            response = resp2resp(data)
+                            send(bot, contact, response)
                     else:
                         send(bot, contact, '搜索"{}"网络错误了哦'.format(keyword))
                 except:
                     send(bot, contact, '搜索"{}"网络错误了哦'.format(keyword))
+
             if in_bt_buffer(keyword.lower()):
                 send(bot, contact, '刚刚才搜过"{}"了哦'.format(keyword.lower()))
                 return
-            netcom = threading.Thread(target=search2, args=(bot, contact, keyword))
+            netcom = threading.Thread(
+                target=search2, args=(bot, contact, keyword))
             netcom.setDaemon(True)
             netcom.start()
+
+        # others
         else:
             send(bot, contact, '嘤嘤嘤' if member is None else '@{} 嘤嘤嘤'.format(member.name))
     else:
