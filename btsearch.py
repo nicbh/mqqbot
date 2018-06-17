@@ -70,7 +70,7 @@ def url2magnet(url):
     return 'magnet:?xt=urn:btih:' + url2hash(url)
 
 
-def getOptions(headless=True):
+def getOptions(headless=True, enable_js=False):
     chrome_options = Options()
     chrome_options.add_argument('--no-sandbox')
     if headless is True:  # if not, with xvfb
@@ -83,7 +83,7 @@ def getOptions(headless=True):
     prefs = {
         'profile.default_content_setting_values': {
             'images': 2,
-            'javascript': 2
+            'javascript': (enable_js)?1: 2
         }
     }
     chrome_options.add_experimental_option('prefs', prefs)
