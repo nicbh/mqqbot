@@ -95,7 +95,8 @@ app = Flask(__name__)
 @app.route('/search_btso', methods=['POST'])
 def search_btso(keyword=None):
     response = None
-    browser = webdriver.Chrome(chrome_options=getOptions(False))
+    browser = webdriver.Chrome(
+        chrome_options=getOptions(headless=False, enable_js=True))
     try:
         length = 5
         if keyword is None:
