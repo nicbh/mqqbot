@@ -308,7 +308,8 @@ if __name__ == '__main__':
         if argv[0].lower() == 'stop':
             os.system(
                 "kill $(ps aux | grep 'chrom[e]' | awk '{print $2}')")
-            os.system("kill $(ps aux | grep 'bt.p[y]' | awk '{print $2}')")
+            os.system(
+                "kill $(ps aux | grep 'btsearch.p[y]' | awk '{print $2}')")
         elif argv[0].lower() == 'kw':
             mode = 'bt'
             if argv[1].lower() == 'btso':
