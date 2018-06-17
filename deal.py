@@ -22,6 +22,12 @@ rand_generator = random.SystemRandom()
 bt_buffer = {}
 
 
+def push_bt_buffer(keyword):
+    bt_buffer[keyword] = time.time()
+    with open('bt_buffer.log', 'w+', encoding='utf-8') as file:
+        file.write(json.dumps(bt_buffer, ensure_ascii=False, indent=4))
+
+
 def in_bt_buffer(keyword):
     out_date_time = 5 * 60
     now_time = time.time()
@@ -29,14 +35,8 @@ def in_bt_buffer(keyword):
         if now_time - bt_buffer[keyword] < out_date_time:
             return True
         else:
-            bt_buffer[keyword] = now_time
-            with open('bt_buffer.log', 'w+', encoding='utf-8') as file:
-                file.write(json.dumps(bt_buffer, ensure_ascii=False, indent=4))
             return False
     else:
-        bt_buffer[keyword] = now_time
-        with open('bt_buffer.log', 'w+', encoding='utf-8') as file:
-            file.write(json.dumps(bt_buffer, ensure_ascii=False, indent=4))
         return False
 
 
@@ -201,6 +201,7 @@ def onQQMessage(bot, contact, member, content):
                         'http://{}:5000/search_{}'.format(ip, mode), data={'keyword': keyword}, timeout=60 * 10)
                     print_flush('[btInfo]: "{}", {}'.format(keyword, r.ok))
                     if r.ok:
+                        push_bt_buffer(keyword)
                         data = json.loads(r.text)
                         if len(data) == 0:
                             send(bot, contact, '找不到"{}"的资源哦'.format(keyword))
