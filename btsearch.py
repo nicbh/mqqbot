@@ -108,6 +108,8 @@ def search_btso(keyword=None):
         resources = []
         sleep(0.5, 1.5)
         open_site(browser, url)
+        if debug is True:
+            print('[html] ' + str(browser.page_source)[0:200])
         soup = BeautifulSoup(browser.page_source, 'html.parser')
         data_list = soup.find(class_='data-list')
         if data_list is not None:
@@ -154,6 +156,8 @@ def search_btrabbit(keyword=None):
         resources = []
         sleep(0.5, 1.5)
         open_site(browser, url)
+        if debug is True:
+            print('[html] ' + str(browser.page_source)[0:200])
         soup = BeautifulSoup(browser.page_source, 'html.parser')
         data_list = soup.find_all(class_='search-item')
         if data_list is not None:
@@ -243,6 +247,8 @@ def search_cnbtkitty(keyword=None):
         keyword = quote(keyword)
         sleep(0.5, 1.5)
         open_site(browser, url)
+        if debug is True:
+            print('[html] ' + str(browser.page_source)[0:200])
         # sleep(0.5, 1.5)
         browser.find_element_by_id('kwd').send_keys(keyword)
         sleep(0.5, 1)
