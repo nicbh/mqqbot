@@ -68,10 +68,11 @@ def url2hash(url):
 def url2magnet(url):
     return 'magnet:?xt=urn:btih:' + url2hash(url)
 
+
 def getOptions(headless=True):
     chrome_options = Options()
     chrome_options.add_argument('--no-sandbox')
-    if headless is True: # if not, with xvfb
+    if headless is True:  # if not, with xvfb
         chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument('--ignore-certificate-errors')  # https certi
@@ -100,8 +101,6 @@ def search_btso(keyword=None):
             keyword = request.form['keyword']
             if 'length' in request.form:
                 length = request.form['length']
-                if length > 30:
-                    length = 30
         url = 'https://btso.pw/search/{}'.format(keyword)
         resources = []
         sleep(0.5, 1.5)
