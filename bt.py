@@ -1,7 +1,7 @@
 '''
 debian:
-    google-chrome chromedriver
-    pip3 install beautifulsoup4 flask requests
+    google-chrome chromedriver xvfb xauth
+    pip3 install beautifulsoup4 flask requests 
 '''
 
 from bs4 import BeautifulSoup
@@ -72,14 +72,15 @@ from selenium.webdriver.common.keys import Keys
 chrome_options = Options()
 chrome_options.add_argument('--headless')
 chrome_options.add_argument('--disable-gpu')
+chrome_options.add_argument('--ignore-certificate-errors')
 chrome_options.add_argument('--no-sandbox')
+chrome_options.binary_location = '/opt/google/chrome/chrome'
 extension_path = os.getcwd() + '/stopper.crx'
 chrome_options.add_extension(extension_path)
-chrome_options.binary_location = '/opt/google/chrome/chrome'
 prefs = {
     'profile.default_content_setting_values': {
         'images': 2,
-        'javascript': 2
+        # 'javascript': 2
     }
 }
 chrome_options.add_experimental_option('prefs', prefs)
@@ -299,7 +300,7 @@ if __name__ == '__main__':
     if len(argv) > 0:
         if argv[0].lower() == 'stop':
             os.system(
-                "kill $(ps aux | grep 'chromedrive[r]' | awk '{print $2}')")
+                "kill $(ps aux | grep 'chrom[e]' | awk '{print $2}')")
             os.system("kill $(ps aux | grep 'bt.p[y]' | awk '{print $2}')")
         elif argv[0].lower() == 'kw':
             mode = 'bt'
