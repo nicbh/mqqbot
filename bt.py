@@ -1,13 +1,9 @@
 '''
 debian:
     google-chrome chromedriver xvfb xauth
-    pip3 install beautifulsoup4 flask requests 
+    pip3 install beautifulsoup4 flask requests selenium
 '''
 
-from bs4 import BeautifulSoup
-from urllib.parse import unquote, quote
-from flask import Flask, request
-from selenium.common.exceptions import TimeoutException
 import requests
 import json
 import time
@@ -15,6 +11,13 @@ import random
 import sys
 import os
 import time
+from bs4 import BeautifulSoup
+from urllib.parse import unquote, quote
+from flask import Flask, request
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import TimeoutException
 
 timeout_start = 20
 timeout_max = 60
@@ -65,25 +68,24 @@ def url2hash(url):
 def url2magnet(url):
     return 'magnet:?xt=urn:btih:' + url2hash(url)
 
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.keys import Keys
-
-chrome_options = Options()
-chrome_options.add_argument('--headless')
-chrome_options.add_argument('--disable-gpu')
-chrome_options.add_argument('--ignore-certificate-errors')
-chrome_options.add_argument('--no-sandbox')
-chrome_options.binary_location = '/opt/google/chrome/chrome'
-extension_path = os.getcwd() + '/stopper.crx'
-chrome_options.add_extension(extension_path)
-prefs = {
-    'profile.default_content_setting_values': {
-        'images': 2,
-        # 'javascript': 2
+def getOptions(headless=True):
+    chrome_options = Options()
+    chrome_options.add_argument('--no-sandbox')
+    if headless is True: # if not, with xvfb
+        chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--disable-gpu')
+    chrome_options.add_argument('--ignore-certificate-errors')  # https certi
+    # chrome_options.binary_location = '/opt/google/chrome/chrome'
+    extension_path = os.getcwd() + '/stopper.crx'
+    chrome_options.add_extension(extension_path)
+    prefs = {
+        'profile.default_content_setting_values': {
+            'images': 2,
+            'javascript': 2
+        }
     }
-}
-chrome_options.add_experimental_option('prefs', prefs)
+    chrome_options.add_experimental_option('prefs', prefs)
+    return chrome_options
 
 app = Flask(__name__)
 
@@ -91,7 +93,7 @@ app = Flask(__name__)
 @app.route('/search_btso', methods=['POST'])
 def search_btso(keyword=None):
     response = None
-    browser = webdriver.Chrome(chrome_options=chrome_options)
+    browser = webdriver.Chrome(chrome_options=getOptions(False))
     try:
         length = 5
         if keyword is None:
@@ -134,7 +136,7 @@ def search_btso(keyword=None):
 @app.route('/search_bt2', methods=['POST'])
 def search_btrabbit(keyword=None):
     response = None
-    browser = webdriver.Chrome(chrome_options=chrome_options)
+    browser = webdriver.Chrome(chrome_options=getOptions())
     try:
         length = 5
         if keyword is None:
@@ -172,6 +174,7 @@ def search_btrabbit(keyword=None):
         return response
     finally:
         browser.close()
+
 
 @app.route('/search_bt', methods=['POST'])
 def search_cnbtkitty(keyword=None):
@@ -217,7 +220,7 @@ def search_cnbtkitty(keyword=None):
         return resource
 
     response = None
-    browser = webdriver.Chrome(chrome_options=chrome_options)
+    browser = webdriver.Chrome(chrome_options=getOptions())
     try:
         browser.set_page_load_timeout(timeout_start)
         browser.set_script_timeout(timeout_start)
@@ -315,9 +318,9 @@ if __name__ == '__main__':
             print('start to search keyword "{}"...'.format(keyword))
             if mode == 'bt':
                 response = search_cnbtkitty(keyword)
-            elif mode =='btso':
+            elif mode == 'btso':
                 response = search_btso(keyword)
-            elif mode=='bt2':
+            elif mode == 'bt2':
                 response = search_btrabbit(keyword)
             print(quote(response))
     else:
