@@ -83,7 +83,7 @@ def getOptions(headless=True, enable_js=False):
     prefs = {
         'profile.default_content_setting_values': {
             'images': 2,
-            'javascript': 1 if enable_js else 2
+            'javascript': 0 if enable_js else 2
         }
     }
     chrome_options.add_experimental_option('prefs', prefs)
