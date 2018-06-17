@@ -62,7 +62,7 @@ def open_site(browser, func):
 
 
 def url2hash(url):
-    return url.split('/')[-1]
+    return url.split('/')[-1].strip('.html').strip('.htm')
 
 
 def url2magnet(url):
@@ -142,31 +142,36 @@ def search_btrabbit(keyword=None):
             keyword = request.form['keyword']
             if 'length' in request.form:
                 length = request.form['length']
-                if length > 30:
-                    length = 30
-        url = 'https://btso.pw/search/{}'.format(keyword)
+        url = 'https://www.btrabbit.tv/search/{}/default-1.html'.format(
+            keyword)
         resources = []
         sleep(0.5, 1.5)
         open_site(browser, url)
         soup = BeautifulSoup(browser.page_source, 'html.parser')
-        data_list = soup.find(class_='data_list')
+        data_list = soup.find_all(class_='search-item')
         if data_list is not None:
-            data_list = data_list.find_all('div')[1:]
             index = 0
-            for item in data_list[0:length]:
-                name = item.a.attrs['title']
-                href = item.a.attrs['href']
+            for item in data_list:
+                name = item.find(class_='item-title').h3.a.attrs['title']
+                href = item.find(class_='item-title').h3.a.attrs['href']
                 magnet = url2magnet(href)
-                time_ = item.find(class_='date')
-                volume = item.find(class_='size')
+                bar = item.find(class_='item-bar').find_all('span')
+                types = bar[0].string
+                time_ = bar[1].b.string
+                volume = bar[2].b.string
+                hots = bar[3].b.string
+                lass = bar[4].b.string
                 index += 1
                 resources.append({
                     'name': name,
                     'num': index,
+                    'type': types,
                     'href': href,
                     'magnet': magnet,
                     'time': time_,
-                    'volume': volume
+                    'volume': volume,
+                    'hot': hots,
+                    'last': lasts
                 })
         resources = [x for x in resources if x is not None]
         response = json.dumps(resources, ensure_ascii=False)
