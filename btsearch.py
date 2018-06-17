@@ -326,6 +326,6 @@ if __name__ == '__main__':
                 response = search_btso(keyword)
             elif mode == 'bt2':
                 response = search_btrabbit(keyword)
-            print(quote(response))
+            print(response)
     else:
         app.run(debug=False, host='0.0.0.0')
