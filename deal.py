@@ -180,7 +180,7 @@ def onQQMessage(bot, contact, member, content):
                 def resp2resp(resp):
                     response = []
                     for item in resp:
-                        title = '{}.{}'.format(item['num']. item['name'])
+                        title = '{}.{}'.format(item['num'], item['name'])
                         info = []
                         if 'type' in item:
                             info.append('类型:{}'.format(item['time']))
