@@ -183,15 +183,15 @@ def onQQMessage(bot, contact, member, content):
                         title = '{}.{}'.format(item['num'], item['name'])
                         info = []
                         if 'type' in item:
-                            info.append('类型:{}'.format(item['time']))
+                            info.append('类型:{}'.format(item['type']))
                         if 'time' in item:
                             info.append('时间:{}'.format(item['time']))
                         if 'volume' in item:
-                            info.append('大小:{}'.format(item['time']))
+                            info.append('大小:{}'.format(item['volume']))
                         if 'hot' in item:
-                            info.append('人气:{}'.format(item['time']))
+                            info.append('人气:{}'.format(item['hot']))
                         if 'last' in item:
-                            info.append('最近:{}'.format(item['time']))
+                            info.append('最近:{}'.format(item['last']))
                         content = '{}'.format(item['magnet'])
                         response.append('{}\n{}\n{}'.format(
                             title, ' '.join(info), content))
