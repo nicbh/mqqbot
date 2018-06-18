@@ -11,9 +11,9 @@ import random
 import sys
 import os
 import time
-from bs4 import BeautifulSoup
 from urllib.parse import unquote, quote
 from flask import Flask, request
+from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
@@ -23,6 +23,10 @@ timeout_start = 20
 timeout_max = 60
 debug = True
 
+def debug_out(string):
+    if debug is True:
+        print('[DEBUG] {}'.format(string))
+        sys.stdout.flush()
 
 def sleep(down, up):
     time.sleep(random.random() * (up - down) + up)
@@ -37,18 +41,16 @@ def open_site(browser, func):
     timeout = timeout_start
     while success is False and timeout <= timeout_max:
         try:
-            print('[INFO {}] start to loading {} in {}s'.format(
+            debug_out('[INFO {}] start to loading {} in {}s'.format(
                 time.ctime(), url, timeout))
-            sys.stdout.flush()
             if timeout == timeout_start:
                 func(browser)
             else:
                 browser.refresh()
             success = True
         except TimeoutException:
-            print('[INFO {}] time out after {} seconds when loading'.format(
+            debug_out('[INFO {}] time out after {} seconds when loading'.format(
                 time.ctime(), timeout))
-            sys.stdout.flush()
             try:
                 browser.execute_script('window.stop()')
                 success = True
@@ -103,8 +105,7 @@ def search_btso(keyword=None):
         length = 5
         if keyword is None:
             keyword = request.form['keyword']
-            if debug is True:
-                print('[keyword]: ' + keyword)
+            debug_out('[keyword]: ' + keyword)
             if 'length' in request.form:
                 length = request.form['length']
         url = 'https://btso.pw/search/{}'.format(keyword)
@@ -114,7 +115,7 @@ def search_btso(keyword=None):
         if debug is True:
             with open('a.html','w+',encoding='utf-8') as file:
                 file.write(browser.page_source)
-            print('[html] save')
+            debug_out('[html] save')
         soup = BeautifulSoup(browser.page_source, 'html.parser')
         data_list = soup.find(class_='data-list')
         if data_list is not None:
@@ -137,8 +138,7 @@ def search_btso(keyword=None):
                 })
         resources = [x for x in resources if x is not None]
         response = json.dumps(resources, ensure_ascii=False)
-        if debug is True:
-            print('[resp]: ' + response)
+        debug_out('[resp]: ' + response)
         return response
     finally:
         browser.close()
@@ -152,8 +152,7 @@ def search_btrabbit(keyword=None):
         length = 5
         if keyword is None:
             keyword = request.form['keyword']
-            if debug is True:
-                print('[keyword]: ' + keyword)
+            debug_out('[keyword]: ' + keyword)
             if 'length' in request.form:
                 length = request.form['length']
         url = 'https://www.btrabbit.tv/search/{}/default-1.html'.format(
@@ -161,8 +160,7 @@ def search_btrabbit(keyword=None):
         resources = []
         sleep(0.5, 1.5)
         open_site(browser, url)
-        if debug is True:
-            print('[html] ' + str(browser.page_source)[0:200])
+        debug_out('[html] ' + str(browser.page_source)[0:200])
         soup = BeautifulSoup(browser.page_source, 'html.parser')
         data_list = soup.find_all(class_='search-item')
         if data_list is not None:
@@ -191,8 +189,7 @@ def search_btrabbit(keyword=None):
                 })
         resources = [x for x in resources if x is not None]
         response = json.dumps(resources, ensure_ascii=False)
-        if debug is True:
-            print('[resp]: ' + response)
+        debug_out('[resp]: ' + response)
         return response
     finally:
         browser.close()
@@ -252,15 +249,14 @@ def search_cnbtkitty(keyword=None):
         keyword = quote(keyword)
         sleep(0.5, 1.5)
         open_site(browser, url)
-        if debug is True:
-            print('[html] ' + str(browser.page_source)[0:200])
+        debug_out('[html] ' + str(browser.page_source)[0:200])
         # sleep(0.5, 1.5)
         browser.find_element_by_id('kwd').send_keys(keyword)
         sleep(0.5, 1)
         open_site(browser, lambda b: b.find_element_by_id(
             'kwd').send_keys(Keys.ENTER))
         url = browser.current_url
-        print(url)
+        debug_out(url)
         subclass = ['4']
         resources = [getResouce(browser.page_source, browser)]
         for sub in subclass:
@@ -272,8 +268,7 @@ def search_cnbtkitty(keyword=None):
             resources.append(resouce)
         resources = [x for x in resources if x is not None]
         response = json.dumps(resources, ensure_ascii=False)
-        if debug is True:
-            print('[resp]: ' + response)
+        debug_out('[resp]: ' + response)
         return response
     finally:
         browser.close()

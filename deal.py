@@ -217,7 +217,7 @@ def onQQMessage(bot, contact, member, content):
                     else:
                         send(bot, contact, '搜索"{}"网络错误了哦'.format(keyword))
                 except:
-                    send(bot, contact, '搜索"{}"网络错误了哦'.format(keyword))
+                    send(bot, contact, '搜索"{}"分析失败了哦'.format(keyword))
 
             if in_bt_buffer(keyword.lower()):
                 send(bot, contact, '刚刚才搜过"{}"了哦'.format(keyword.lower()))
