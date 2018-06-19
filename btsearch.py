@@ -75,6 +75,7 @@ def url2magnet(url):
 def getOptions(headless=True, enable_js=False):
     chrome_options = Options()
     chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--start-maximized')
     if headless is True:  # if not, with xvfb
         chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
@@ -116,6 +117,7 @@ def search_btso(keyword=None):
             with open('a.html','w+',encoding='utf-8') as file:
                 file.write(browser.page_source)
             debug_out('[html] save')
+            debug_out(browser.execute_script('return window.performance.getEntries();'))
         soup = BeautifulSoup(browser.page_source, 'html.parser')
         data_list = soup.find(class_='data-list')
         if data_list is not None:

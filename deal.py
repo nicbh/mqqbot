@@ -219,7 +219,7 @@ def onQQMessage(bot, contact, member, content):
                 except Exception:
                     import traceback
                     traceback.print_exc()
-                    send(bot, contact, '搜索"{}"分析失败了哦'.format(keyword))
+                    send(bot, contact, '搜索"{}"出现异常了哦'.format(keyword))
                     
 
             if in_bt_buffer(keyword.lower()):
