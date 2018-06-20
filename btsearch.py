@@ -121,7 +121,7 @@ def search_btso(keyword=None):
                 file.write(browser.page_source)
             debug_out('[html] save')
             debug_out(browser.execute_script('return window.performance.getEntries();'))
-            data = broswer.get_log('performance')
+            data = browser.get_log('performance')
             debug_out(data)
         soup = BeautifulSoup(browser.page_source, 'html.parser')
         data_list = soup.find(class_='data-list')
