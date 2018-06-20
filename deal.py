@@ -121,7 +121,7 @@ def onQQMessage(bot, contact, member, content):
                         'src2dest sourceLanguage 源语言翻译到目标语言\n' + \
                         'detectlang text 语言检测\n' + \
                         'languages 语言缩写列表\n' + \
-                        'bt/bt2 keyword 磁力搜索\n' + \
+                        'bt/bt2/btso keyword 磁力搜索\n' + \
                         '(0<len<9)-(all_len<15) 番号搜索'
             send(bot, contact, help_text)
             return
