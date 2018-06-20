@@ -92,7 +92,8 @@ def getOptions(headless=True, enable_js=False):
         'profile.default_content_setting_values': {
             'images': 2,
             'javascript': 2
-        }
+        },
+        'intl.accept_languages': 'zh-CN,zh'
     }
     if enable_js:
         del prefs['profile.default_content_setting_values']['javascript']
