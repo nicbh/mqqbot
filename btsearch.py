@@ -78,6 +78,8 @@ def url2magnet(url):
 def getOptions(headless=True, enable_js=False):
     chrome_options = Options()
     chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36')
+    chrome_options.add_argument('lang=zh_CN.UTF-8')
     chrome_options.add_argument('--start-maximized')
     if headless is True:  # if not, with xvfb
         chrome_options.add_argument('--headless')
