@@ -122,7 +122,9 @@ def search_btso(keyword=None):
             debug_out('[html] save')
             debug_out(browser.execute_script('return window.performance.getEntries();'))
             data = browser.get_log('performance')
-            debug_out(data)
+            with open('per.json','w+',encoding='utf-8') as file:
+                file.write(json.dumps(data, ensure_ascii=False, indent=4))
+            debug_out('per.json output')
         soup = BeautifulSoup(browser.page_source, 'html.parser')
         data_list = soup.find(class_='data-list')
         if data_list is not None:
