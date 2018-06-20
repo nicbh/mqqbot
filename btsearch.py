@@ -24,10 +24,12 @@ timeout_start = 20
 timeout_max = 60
 debug = True
 
+
 def debug_out(string):
     if debug is True:
         print('[DEBUG] {}'.format(string))
         sys.stdout.flush()
+
 
 def sleep(down, up):
     time.sleep(random.random() * (up - down) + up)
@@ -102,7 +104,7 @@ app = Flask(__name__)
 def search_btso(keyword=None):
     response = None
     desired = DesiredCapabilities.CHROME
-    desired ['loggingPrefs'] = { 'performance':'ALL' }
+    desired['loggingPrefs'] = {'performance': 'ALL'}
     browser = webdriver.Chrome(
         chrome_options=getOptions(headless=False, enable_js=True), desired_capabilities=desired)
     try:
@@ -117,12 +119,15 @@ def search_btso(keyword=None):
         sleep(0.5, 1.5)
         open_site(browser, url)
         if debug is True:
-            with open('a.html','w+',encoding='utf-8') as file:
+            with open('a.html', 'w+', encoding='utf-8') as file:
                 file.write(browser.page_source)
             debug_out('[html] save')
-            debug_out(browser.execute_script('return window.performance.getEntries();'))
+            debug_out(browser.execute_script(
+                'return window.performance.getEntries();'))
             data = browser.get_log('performance')
-            with open('per.json','w+',encoding='utf-8') as file:
+            for item in data:
+                item['message'] = json.loads(item['message'])
+            with open('per.json', 'w+', encoding='utf-8') as file:
                 file.write(json.dumps(data, ensure_ascii=False, indent=4))
             debug_out('per.json output')
         soup = BeautifulSoup(browser.page_source, 'html.parser')
