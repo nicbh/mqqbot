@@ -201,7 +201,7 @@ def onQQMessage(bot, contact, member, content):
                         'http://{}:5000/search_{}'.format(ip, mode), data={'keyword': keyword}, timeout=60 * 10)
                     print_flush('[btInfo]: "{}", {}'.format(keyword, r.ok))
                     if r.ok:
-                        push_bt_buffer(keyword)
+                        # push_bt_buffer(keyword)
                         data = json.loads(r.text)
                         if len(data) == 0:
                             send(bot, contact, '找不到"{}"的资源哦'.format(keyword))

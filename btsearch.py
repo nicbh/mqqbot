@@ -17,6 +17,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.common.exceptions import TimeoutException
 
 timeout_start = 20
@@ -52,7 +53,7 @@ def open_site(browser, func):
             debug_out('[INFO {}] time out after {} seconds when loading'.format(
                 time.ctime(), timeout))
             try:
-                browser.execute_script('window.stop()')
+                # browser.execute_script('window.stop()')
                 success = True
             except TimeoutException:
                 sleep(0.5, 1 + timeout / 10)
@@ -100,8 +101,10 @@ app = Flask(__name__)
 @app.route('/search_btso', methods=['POST'])
 def search_btso(keyword=None):
     response = None
+    desired = DesiredCapabilities.CHROME
+    desired ['loggingPrefs'] = { 'performance':'ALL' }
     browser = webdriver.Chrome(
-        chrome_options=getOptions(headless=False, enable_js=True))
+        chrome_options=getOptions(headless=False, enable_js=True), desired_capabilities=desired)
     try:
         length = 5
         if keyword is None:
@@ -118,6 +121,8 @@ def search_btso(keyword=None):
                 file.write(browser.page_source)
             debug_out('[html] save')
             debug_out(browser.execute_script('return window.performance.getEntries();'))
+            data = broswer.get_log('performance')
+            debug_out(data)
         soup = BeautifulSoup(browser.page_source, 'html.parser')
         data_list = soup.find(class_='data-list')
         if data_list is not None:
