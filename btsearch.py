@@ -22,7 +22,7 @@ from selenium.common.exceptions import TimeoutException
 
 timeout_start = 20
 timeout_max = 60
-debug = True
+debug = False
 
 
 def debug_out(string):
@@ -204,7 +204,7 @@ def search_btrabbit(keyword=None):
                     'hot': hots,
                     'last': lasts
                 })
-        resources = [x for x in resources if x is not None]
+        resources = [x for x in resources if x is not None][0:6]
         response = json.dumps(resources, ensure_ascii=False)
         debug_out('[resp]: ' + response)
         return response
@@ -219,7 +219,7 @@ def search_cnbtkitty(keyword=None):
         open_site(browser, contentUrl)
         soup = BeautifulSoup(browser.page_source, 'html.parser')
         magnet = soup.find(class_='magnet')
-        return magnet.a.attrs['href']
+        return magnet.a.attrs['href'] if magnet is not None else None
 
     def getResouce(html, browser):
         resource = []
@@ -236,6 +236,8 @@ def search_cnbtkitty(keyword=None):
             href = item.dt.a.attrs['href']
             spans = item.find(class_='option').find_all('span')
             magnet = getMagnet(spans[1].a.attrs['href'], browser)
+            if magnet is None:
+                continue
             name = unquote(magnet[magnet.rfind('=') + 1:])
             magnet = magnet[0:magnet.rfind('&dn=')]
             time_ = spans[2].b.string
@@ -260,7 +262,7 @@ def search_cnbtkitty(keyword=None):
     try:
         browser.set_page_load_timeout(timeout_start)
         browser.set_script_timeout(timeout_start)
-        url = 'http://cnbtkitty.xyz/'
+        url = 'http://cnbtkitty.me/'
         if keyword is None:
             keyword = request.form['keyword']
         keyword = quote(keyword)
@@ -293,6 +295,7 @@ def search_cnbtkitty(keyword=None):
 
 @app.route('/search', methods=['POST'])
 def search():
+    # deprecated
     keyword = quote(request.form['keyword'])
     print(keyword)
     url = 'http://cnbtkitty.net/'
