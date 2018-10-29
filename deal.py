@@ -207,7 +207,7 @@ def onQQMessage(bot, contact, member, content):
                             if mode == 'btso':
                                 send(bot, contact, '{}找不到"{}"的资源哦'.format(mode, keyword))
                             else:
-                                send(bot, contact, '{}找不到"{}"的资源，正在尝试下一个网站...'.format(btmode, keyword))
+                                send(bot, contact, '{}找不到"{}"的资源，正在尝试下一个网站...'.format(mode, keyword))
                                 if mode == 'bt':
                                     mode = 'bt2'
                                 else:
