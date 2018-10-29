@@ -172,7 +172,7 @@ def search_btrabbit(keyword=None):
             debug_out('[keyword]: ' + keyword)
             if 'length' in request.form:
                 length = request.form['length']
-        url = 'https://www.btrabbit.tv/search/{}/default-1.html'.format(
+        url = 'https://www.btrabbit.biz/search/{}/default-1.html'.format(
             keyword)
         resources = []
         sleep(0.5, 1.5)
@@ -260,7 +260,7 @@ def search_cnbtkitty(keyword=None):
     try:
         browser.set_page_load_timeout(timeout_start)
         browser.set_script_timeout(timeout_start)
-        url = 'http://cnbtkitty.org/'
+        url = 'http://cnbtkitty.xyz/'
         if keyword is None:
             keyword = request.form['keyword']
         keyword = quote(keyword)
