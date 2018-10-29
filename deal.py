@@ -204,15 +204,15 @@ def onQQMessage(bot, contact, member, content):
                         # push_bt_buffer(keyword)
                         data = json.loads(r.text)
                         if len(data) == 0:
-                            if btmode == 'btso':
+                            if mode == 'btso':
                                 send(bot, contact, '{}找不到"{}"的资源哦'.format(btmode, keyword))
                             else:
                                 send(bot, contact, '{}找不到"{}"的资源，正在尝试下一个网站...'.format(btmode, keyword))
-                                if btmode == 'bt':
-                                    btmode = 'bt2'
+                                if mode == 'bt':
+                                    mode = 'bt2'
                                 else:
-                                    btmode = 'btso'
-                                netcom = threading.Thread(target=search_bt, args=(bot, contact, keyword, btmode))
+                                    mode = 'btso'
+                                netcom = threading.Thread(target=search_bt, args=(bot, contact, keyword, mode))
                                 netcom.setDaemon(True)
                                 netcom.start()
                             return
