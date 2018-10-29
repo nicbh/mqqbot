@@ -205,7 +205,7 @@ def onQQMessage(bot, contact, member, content):
                         data = json.loads(r.text)
                         if len(data) == 0:
                             if mode == 'btso':
-                                send(bot, contact, '{}找不到"{}"的资源哦'.format(btmode, keyword))
+                                send(bot, contact, '{}找不到"{}"的资源哦'.format(mode, keyword))
                             else:
                                 send(bot, contact, '{}找不到"{}"的资源，正在尝试下一个网站...'.format(btmode, keyword))
                                 if mode == 'bt':
